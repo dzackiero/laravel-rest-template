@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Features\AuthWeb;
 use Illuminate\Http\Request;
 
 class WebController extends Controller
@@ -15,7 +16,7 @@ class WebController extends Controller
     public function login()
     {
         $credentials = request(['email', 'password']);
-        if (!$token = auth("web")->attempt($credentials)) {
+        if (!auth("web")->attempt($credentials)) {
             return redirect("login")->withErrors(["message" => __("auth.failed")]);
         }
 

@@ -40,3 +40,21 @@ if (!function_exists('generateFeature')) {
         }
     }
 }
+
+if (!function_exists('isExceptionUserFriendly')) {
+    function isExceptionUserFriendly(Throwable $exception): ?int
+    {
+        $exceptions = config("exception.friendly");
+        foreach ($exceptions as $friendlyException => $errorCode) {
+            if ($exception instanceof $friendlyException) {
+                return $errorCode;
+            }
+        }
+        return null;
+    }
+}
+
+
+
+
+

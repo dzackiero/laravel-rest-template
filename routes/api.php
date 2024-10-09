@@ -2,6 +2,12 @@
 
 use Illuminate\Support\Facades\Route;
 
+Route::get("/", function () {
+    return response()->json([
+        "message" => "Welcome to REST-API"
+    ]);
+});
+
 /* Authentication */
 Route::group(["prefix" => "auth"], function () {
     Route::post('login', [\App\Http\Controllers\v1\AuthController::class, 'login']);

@@ -22,4 +22,57 @@ return Application::configure(basePath: dirname(__DIR__))
             }
             return $request->expectsJson();
         });
-    })->create();
+
+        $exceptions->render(function (Exception $exception) {
+            $baseClass = get_class($exception);
+            $errorMessage = $exception->getMessage();
+            $data = ["exception" => $baseClass];
+
+            if (config("app.env") !== "production") {
+                $data = array_merge($data, [
+                    "message" => $errorMessage,
+                    "file" => $exception->getFile(),
+                    "line" => $exception->getLine(),
+                    "trace" => $exception->getTrace(),
+                ]);
+            }
+
+            if ($errorCode = isExceptionUserFriendly($exception)) {
+                return response()->json([
+                    "status" => false,
+                    "message" => $errorMessage,
+                    "data" => $data
+                ], $errorCode);
+            }
+
+            if ($exception instanceof \Symfony\Component\HttpKernel\Exception\HttpException) {
+                $errorCode = $exception->getStatusCode();
+                $errorMessage = $errorMessage ?: __("http-statuses.$errorCode");
+
+                return response()->json([
+                    "status" => false,
+                    "message" => $errorMessage,
+                    "data" => $data
+                ], $errorCode);
+            }
+
+            if ($exception instanceof \App\Exceptions\WithMessageException) {
+                return response()->json([
+                    "status" => false,
+                    "message" => $exception->getMessage(),
+                    "data" => $data
+                ], $exception->getCode());
+            }
+
+            $errorMessage = config('app.debug') && $errorMessage !== ""
+                ? $errorMessage
+                : __("http-statuses.defaultError");
+
+            return response()->json([
+                "status" => false,
+                "message" => $errorMessage,
+                "data" => $data
+            ], 500);
+        });
+    })->
+    create();

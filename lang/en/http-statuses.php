@@ -81,4 +81,5 @@ return [
     '598'          => 'Network Read Timeout Error',
     '599'          => 'Network Connect Timeout Error',
     'unknownError' => 'Unknown Error',
+    'defaultError' => 'Something Went Wrong'
 ];

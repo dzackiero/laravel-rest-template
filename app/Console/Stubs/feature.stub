@@ -1,0 +1,20 @@
+<?php
+
+namespace App\Enums\Features;
+
+
+enum {{ class }}: string
+{
+    public function getPlatform(): string
+    {
+        return {{ platform }};
+    }
+
+    public function getFeature(): string
+    {
+        return {{ feature }};
+    }
+
+    case Login = "login";
+    case Logout = "logout";
+}

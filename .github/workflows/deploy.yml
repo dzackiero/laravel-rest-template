@@ -1,0 +1,25 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - production
+  pull_request:
+    branches:
+      - production
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Deploy to server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}          # Your server's hostname or IP
+          username: ${{ secrets.USERNAME }}  # Your SSH user (e.g., myuser)
+          port: ${{ secrets.PORT }}          # SSH port (default is 22)
+          key: ${{ secrets.SSHKEY }}         #
+          debug: true
+          script: "cd ~/scripts && sh deploy.sh ${{secrets.DOMAIN}} production"
